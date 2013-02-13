@@ -25,6 +25,11 @@ def print_device(id, *args):
     else:
         print "Device", id, "not found."
 
+def print_actions(id, *args):
+    if id in devices:
+        print ", ".join(devices[id].actions.keys())
+    else:
+        print "Device", id, "not found."
 
 def monitor(*args):
     print json.dumps(devices.values(), cls=DeviceEncoder)
@@ -34,6 +39,7 @@ handlers = {
     "set": handle_device,
     "print": print_device,
     "monitor": monitor,
+    "actions": print_actions,
 }
 
 
