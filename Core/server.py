@@ -2,7 +2,6 @@ from bottle import Bottle
 
 api = Bottle()
 
-
 @api.get('/devices')
 def get_all_devices():
     return ""
@@ -37,4 +36,6 @@ def put_device():
 def delete_devices():
     return ""
 
-api.run(host='localhost', port=8080, reloader=True)
+
+def run():
+    api.run(host='localhost', port=1337, reloader=True)
