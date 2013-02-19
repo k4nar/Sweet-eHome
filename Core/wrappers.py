@@ -11,9 +11,9 @@ for name, module_name in libs:
         module = __import__(module_name)
 
         wrappers[name] = {
-            "listener": module.listener(),
-            "sender": module.sender(),
-            "broadcaster": module.broadcaster()
+            "listener": module.Listener(),
+            "sender": module.Sender(),
+            "broadcaster": module.Broadcaster()
         }
         
     except:
