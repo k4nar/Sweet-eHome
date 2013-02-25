@@ -9,7 +9,7 @@ class BaseListener(Process):
         super(BaseListener, self).__init__()
         
         # Create the connections for the core and the child process
-        self.listener_conn, self.core_conn = Pipe(duplex=false)
+        self.listener_conn, self.core_conn = Pipe(duplex=False)
 
         self.sleep_time = 0.01
 
@@ -52,6 +52,7 @@ class BaseListener(Process):
         Method that needs to be overloaded
         Called in a new process every time receive is called 
         """
+        pass
 
     def send(self, *args):
         """
