@@ -39,13 +39,19 @@ class BaseListener(Process):
         """
         pass
 
-    def receive(self, handler, *args, **kwargs):
+    def receive(self, *args, **kwargs):
         """
         Method that needs to be called every time you want to handle a response
-        Starts `handler` in a new process
+        Starts `self.handler` in a new process
         """
-        p = Process(target=handler, args=args, kwargs=kwargs)
+        p = Process(target=self.handler, args=args, kwargs=kwargs)
         p.start()
+
+    def handler(self, *args, **kwargs):
+        """
+        Method that needs to be overloaded
+        Called in a new process every time receive is called 
+        """
 
     def send(self, *args):
         """
