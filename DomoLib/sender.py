@@ -6,3 +6,6 @@ class BaseSender(object):
 
     def send(self):
         pass
+
+    def do(self, action, device):
+        pass
