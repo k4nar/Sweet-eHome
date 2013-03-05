@@ -4,9 +4,9 @@ import openzwave
 from openzwave import PyManager
 
 
-class zwaveDriver(BaseDriver):
+class Driver(BaseDriver):
     def __init__(self, core):
-        super(zwaveDriver, self).__init__(core)
+        super(Driver, self).__init__(core)
 
         self.options = openzwave.PyOptions()
         self.options.create("openzwave/config/", "", "")

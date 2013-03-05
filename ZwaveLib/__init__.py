@@ -1,1 +1,3 @@
-from zwavedriver import zwaveDriver
+from zwavedriver import Driver
+
+self.name = "zwaveDriver"
