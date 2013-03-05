@@ -1,8 +1,12 @@
-from mongokit import Document
+from mongokit import Document, Connection
 
-from connection import Connection
 from action import Action
 
+
+connection = Connection()
+devices = connection["sweet-ehome"].devices
+
+@connection.register
 class StoredDevice(Document):
     """A base device stored in Mongodb"""
 
@@ -10,10 +14,14 @@ class StoredDevice(Document):
     __collection__ = 'devices'
 
     structure = {
+        'id': basestring,
+
+        'driver': basestring,
+
         'type': basestring,
+
         'actions': [Action()],
         'params': dict,
-        'connection': Connection(),
     }
 
-    required_fields = ['type', 'actions', 'infos', 'connection']
+    required_fields = ['id', 'driver', 'type']
