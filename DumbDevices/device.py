@@ -8,9 +8,9 @@ class Device:
         self.actions = {}
         self.properties = {}
 
-    def __call__(self, action, *args):
+    def __call__(self, action, **kwargs):
         if action in self.actions:
-            return self.actions[action](*args)
+            return self.actions[action](**kwargs)
         return False
 
 
@@ -19,4 +19,4 @@ class DeviceEncoder(json.JSONEncoder):
         if not isinstance(obj, Device):
             return super(json.JSONDecoder, self).default(obj)
 
-        return {"type": obj.type, "id": obj.id, "properties": obj.properties}
+        return {"type": obj.type, "id": obj.id, "properties": obj.properties, "actions": obj.actions.keys()}

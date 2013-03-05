@@ -21,25 +21,30 @@ class Light(Device):
         if changeColor:
             self.actions["changeColor"] = self.changeColor
 
-    def turnOn(self, *args):
+    def turnOn(self):
         self.properties["on"] = True
         return True
 
-    def turnOff(self, *args):
+    def turnOff(self):
         self.properties["on"] = False
         return True
 
-    def toggle(self, *args):
+    def toggle(self):
         self.properties["on"] = not self.properties["on"]
         return True
 
-    def variate(self, var, *args):
+    def variate(self, var=None):
+        try:
+            var = int(var)
+        except:
+            return False
+
         if var >= 0 and var <= 1:
             self.properties["var"] = var
             return True
         return False
 
-    def changeColor(self, color, *args):
+    def changeColor(self, color=None):
         if color in ["red", "blue", "green", "yellow"]:
             self.properties["color"] = color
             return True

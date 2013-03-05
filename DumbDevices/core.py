@@ -1,6 +1,7 @@
-import sys
 import json
+
 from light import Light
+
 from device import DeviceEncoder
 
 
@@ -11,45 +12,5 @@ devices = dict((dev.id, dev) for dev in [
     Light(id="complexLight", dummer=True, var=0.8, changeColor=True, color="blue"),
 ])
 
-
-def handle_device(id, *args):
-    if id in devices and devices[id](*args):
-        print "OK"
-    else:
-        print "FAIL"
-
-
-def print_device(id, *args):
-    if id in devices:
-        print json.dumps(devices[id], cls=DeviceEncoder)
-    else:
-        print "Device", id, "not found."
-
-def print_actions(id, *args):
-    if id in devices:
-        print ", ".join(devices[id].actions.keys())
-    else:
-        print "Device", id, "not found."
-
-def monitor(*args):
-    print json.dumps(devices.values(), cls=DeviceEncoder)
-
-
-handlers = {
-    "set": handle_device,
-    "print": print_device,
-    "monitor": monitor,
-    "actions": print_actions,
-}
-
-
-def handle(op, *args):
-    if op in handlers:
-        handlers[op](*args)
-    else:
-        print "No such operator", op, "."
-
-if __name__ == '__main__':
-    while True:
-        line = sys.stdin.readline()
-        handle(*line.split())
+def dumps(data):
+    return json.dumps(data, cls=DeviceEncoder)
