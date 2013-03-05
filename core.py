@@ -1,19 +1,12 @@
 from multiprocessing.managers import BaseManager
 
+from Devices.device import devices
+
 class Core(object):
     def __init__(self):
         super(Core, self).__init__()
 
-        self.nb = 0
-
-    def test(self, foo="FOO"):
-
-        import time
-
-        while 1:
-            print "HELLO, I'M", foo, '--', self.nb
-            self.nb += 1
-            time.sleep(1)
+        self.devices = devices
 
 
 class CoreManager(BaseManager):

@@ -25,7 +25,6 @@ def do_action(id, action):
         raise HTTPError(404)
 
     kwargs = dict(request.forms.items())
-    print kwargs
 
     res = device(action, **kwargs)
     if not res:
