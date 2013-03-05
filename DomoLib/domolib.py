@@ -42,5 +42,5 @@ class BaseLib(object):
         query.update(self._base_query)
         return self._devices.remove(query)
 
-    def do(self, action, *args, **kwargs):
+    def do(self, device, action, **kwargs):
         pass
