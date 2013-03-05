@@ -37,5 +37,5 @@ def delete_devices():
     return ""
 
 
-def run():
-    api.run(host='localhost', port=1337, reloader=True)
+def run(core):
+    api.run(host='localhost', port=1337)
