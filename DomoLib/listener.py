@@ -5,9 +5,11 @@ class BaseListener(Process):
     """
     Base class for listeners
     """
-    def __init__(self):
+    def __init__(self, core):
         super(BaseListener, self).__init__()
         
+        self.core = core
+
         # Create the connections for the core and the child process
         self.listener_conn, self.core_conn = Pipe(duplex=False)
 

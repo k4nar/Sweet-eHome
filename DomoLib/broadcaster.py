@@ -6,8 +6,10 @@ class BaseBroadcaster(Process):
     Base class for broadcaster
     """
 
-    def __init__(self):
+    def __init__(self, core):
         super(BaseBroadcaster, self).__init__()
+
+        self.core = core
 
         self.sleep_time = 200
 
