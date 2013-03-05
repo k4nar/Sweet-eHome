@@ -1,5 +1,5 @@
 import json
-
+import inspect
 
 class Device:
     def __init__(self, id=""):
@@ -19,4 +19,14 @@ class DeviceEncoder(json.JSONEncoder):
         if not isinstance(obj, Device):
             return super(json.JSONDecoder, self).default(obj)
 
-        return {"type": obj.type, "id": obj.id, "properties": obj.properties, "actions": obj.actions.keys()}
+        return {"type": obj.type, "id": obj.id, "properties": obj.properties, "actions": self.encode_actions(obj.actions)}
+
+    def encode_actions(self, actions):
+        d = {}
+        
+        for name, func in actions.items():
+            args = inspect.getcallargs(func)
+            args.pop("self")
+            d[name] = args
+
+        return d

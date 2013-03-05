@@ -1,1 +1,1 @@
-from domolib import BaseLib
+from domolib import BaseDriver

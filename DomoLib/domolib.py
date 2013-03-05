@@ -1,13 +1,16 @@
-class BaseLib(object):
-    """Base class for DomoLib implementations"""
+from Devices.device import devices
+
+class BaseDriver(object):
+    """Base class for DomoLib drivers implementations"""
     def __init__(self, core):
-        super(BaseLib, self).__init__()
+        super(BaseDriver, self).__init__()
         
         self._core = core
-        self._devices = core.devices
+        self._devices = devices
 
-        self._name = self.__class__.__name__
-        self._base_query = {'driver': self._name}
+        self.name = "BaseDriver"
+
+        self._base_query = {'driver': self.name}
 
     def devices(self, query=None):
         if query:
@@ -30,7 +33,7 @@ class BaseLib(object):
         device.save()
 
     def update(self, device, attributes):
-        return self._devices.update({'_id': device._id}, {'$set': attributes})
+        return self._devices.update({'_id': device['_id']}, {'$set': attributes})
     
     def save(self, device):
         if device:
@@ -38,7 +41,7 @@ class BaseLib(object):
         return False
 
     def delete(self, device):
-        query = {'_id': device._id}
+        query = {'_id': device['_id']}
         query.update(self._base_query)
         return self._devices.remove(query)
 

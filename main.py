@@ -20,11 +20,8 @@ if __name__ == '__main__':
 
     core = ProxyCore()
 
+    wrappers = get_all_wrappers(core)
+
     server = Process(target=run, args=(core,))
-    #server.start()
-
-    for wrapper in get_all_wrappers(core).values():
-        wrapper['listener'].start()
-        wrapper['broadcaster'].start()
-
-    #server.join()
+    server.start()
+    server.join()

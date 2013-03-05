@@ -1,1 +1,1 @@
-from dumbdeviceslib import DumbDevicesLib
+from dumbdeviceslib import Driver

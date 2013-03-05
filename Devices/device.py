@@ -10,6 +10,8 @@ devices = connection["sweet-ehome"].devices
 class StoredDevice(Document):
     """A base device stored in Mongodb"""
 
+    use_dot_notation = True
+
     __database__ = 'sweet-ehome'
     __collection__ = 'devices'
 
