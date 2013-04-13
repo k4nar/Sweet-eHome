@@ -1,0 +1,28 @@
+<h1>Devices :</h1>
+<ul class="large-block-grid-2">
+  <li id="lights">
+    <h2>Lights</h2>
+    <ul class="large-block-grid-3">
+      <li ng-repeat="device in devices | filter: {type: 'light'}" class="thumbnail">
+        <div class="panel">
+          <h3>{{device.id}}</h3>
+          <h4>Properties :</h4>
+          <ul>
+            <li ng-repeat="(name, value) in device.properties" ng-hide="value == null">
+              <strong>{{name}} :</strong> {{value}}
+            </li>
+          </ul>
+          <h4>Actions :</h4>
+          <ul class="inline-list">
+            <li ng-repeat="(name, action) in device.actions" ng-hide="!action" class="label radius">
+              {{name}}
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </li>
+  <li id="switches">
+    
+  </li>
+</ul>

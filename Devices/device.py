@@ -1,14 +1,14 @@
-from mongokit import Document, Connection
+from mongokit import Document
+
+from connection import connection, db
 
 from action import Action
 
-
-connection = Connection()
-devices = connection["sweet-ehome"].devices
+devices = db.devices
 
 @connection.register
-class StoredDevice(Document):
-    """A base device stored in Mongodb"""
+class Device(Document):
+    """A device stored in Mongodb"""
 
     use_dot_notation = True
 
@@ -20,10 +20,43 @@ class StoredDevice(Document):
 
         'driver': basestring,
 
-        'type': basestring,
-
         'actions': [Action()],
+
         'params': dict,
+
+        'infos': dict,
     }
 
-    required_fields = ['id', 'driver', 'type']
+    required_fields = ['id', 'driver']
+
+    @staticmethod
+    def all():
+        return [d.apize(shorten=True) for d in devices.Device.fetch()]
+
+    @staticmethod
+    def by_id(id):
+        device = devices.Device.fetch_one({"id": id})
+        if device:
+            return device.apize()
+        return None
+
+    def apize(self, root="/devices", shorten=False):
+        out = dict(self)
+
+        out.pop("_id")
+        out.pop("id")
+        out["url"] = "{}/{}".format(root, self.id)
+        out["actions"] = self.all_actions()
+
+        if shorten:
+            for e in ["actions", "params", "infos"]:
+                out[e] = "{}/{}".format(out["url"], e)
+
+        return out
+
+    def all_actions(self):
+        def _apize_action(action):
+            action.pop("_id")
+            return action
+
+        return [_apize_action(a) for a in self.actions if a]

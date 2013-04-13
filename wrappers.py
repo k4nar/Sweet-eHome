@@ -1,6 +1,6 @@
 libs = {
     "DumbDevices": 'DumbDevicesLib',
-    "Zwave": 'ZwaveLib',
+    #"Zwave": 'ZwaveLib',
 }
 
 def get_all_wrappers(*args, **kwargs):
@@ -11,7 +11,7 @@ def get_all_wrappers(*args, **kwargs):
             driver = __import__(lib).Driver
 
             wrappers[name] = driver(*args, **kwargs)
-            
+
         except Exception, e:
             print "Can't import module", lib, ':', e
 

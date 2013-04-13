@@ -3,7 +3,7 @@ from device import Device
 
 class Light(Device):
     def __init__(self, id="",
-                        dummer=False, var=None,
+                        dimmer=False, var=None,
                         changeColor=False, color=None):
         Device.__init__(self, id)
 
@@ -16,7 +16,7 @@ class Light(Device):
         self.actions["turnOn"] = self.turnOn
         self.actions["turnOff"] = self.turnOff
         self.actions["toggle"] = self.toggle
-        if dummer:
+        if dimmer:
             self.actions["variate"] = self.variate
         if changeColor:
             self.actions["changeColor"] = self.changeColor

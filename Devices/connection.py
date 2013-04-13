@@ -1,8 +1,3 @@
-from mongokit import Document
-
-class Connection(Document):
-
-    structure = {
-    }
-
-    required_fields = []
+from mongokit import Connection
+connection = Connection()
+db = connection["sweet-ehome"]
