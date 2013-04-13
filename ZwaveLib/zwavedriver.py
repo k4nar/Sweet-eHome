@@ -23,6 +23,7 @@ class Driver(BaseDriver):
     def receive(self, args):
         if args['notificationType'] == "NodeNew":
             attributes = {"id": str(args['nodeId']),
+                          "homeid": args['homeId'],
                           "type": "basic",
                           "params": {"value": args['valueId']['value']}}
             self.new(attributes)
@@ -41,4 +42,10 @@ class Driver(BaseDriver):
                 raise Exception
 
     def do(self, device, action, **kwargs):
+        if action == "on":
+            self.manager.SetNodeOn(device['params']['homeId'], int(device['id']))
+        elif action == "off":
+            self.manager.SetNodeOff(device['params']['homeId'], int(device['id']))
+        elif action == "variate":
+            self.manager.SetNodeLevel(device['params']['homeId'], int(device['id']), kwargs['var'])
         print kwargs
