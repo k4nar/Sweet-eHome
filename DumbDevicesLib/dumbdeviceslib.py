@@ -13,6 +13,7 @@ class Driver(BaseDriver):
     """
     Implementation of DomoLib driver for DumbDevices protocol
     """
+
     def __init__(self, core):
         super(Driver, self).__init__(core)
 
@@ -20,10 +21,11 @@ class Driver(BaseDriver):
 
         self.address = "127.0.0.1"
         self.port = "4224"
-        self.base_url = "http://{}:{}".format(self.address, self.port)
+        self.base_url = "http://{}:{}/api".format(self.address, self.port)
 
         self.broadcaster = Process(target=self._broadcaster)
         self.broadcaster.start()
+
 
     def _url(self, *args):
         return "/".join([self.base_url] + list(args))
@@ -50,21 +52,33 @@ class Driver(BaseDriver):
             return True
         return False
 
+    def _get_action(self, name):
+        actions = {
+            "turnOn": "on",
+            "turnOff": "off",
+            "toggle": ""
+        }
+
+        if name in actions:
+            name = actions[name]
+
+        return self.action(name)
+
+
     def _serialize(self, dumb_device):
-        actions = [{"name": name, "args": args} for name, args in dumb_device["actions"].items()]
+        actions = [self._get_action(name) for name in dumb_device["actions"].keys()]
 
         return {
-            "type": dumb_device["type"],
             "id": dumb_device["id"],
             "params": dumb_device["properties"],
-            #"actions": actions,
+            "actions": actions,
+            "infos": {"type": dumb_device["type"]}
         }
 
     def _store(self, dumb_device):
         p = self._serialize(dumb_device)
 
         device = self.device(dumb_device["id"])
-
         if device:
             return self.update(device, p)
         else:
@@ -73,7 +87,6 @@ class Driver(BaseDriver):
     def _broadcaster(self):
         while 1:
             time.sleep(1)
-            print "Broadcasting..."
             devices = self._get_dumb_devices()
             if devices:
                 for device in devices:
