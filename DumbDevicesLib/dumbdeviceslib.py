@@ -104,5 +104,4 @@ class Driver(BaseDriver):
         if action_name in self.action_to_dumb_action:
             action_name = self.action_to_dumb_action[action_name]
 
-        print action_name
         return self._post(device, action_name, **kwargs)

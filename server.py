@@ -10,13 +10,14 @@ def run(core):
 
 @api.hook('after_request')
 def enable_cors():
+    response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
     response.headers['Access-Control-Allow-Origin'] = '*'
 
 #### Devices routes ####
 
 @api.get('/devices')
 def get_devices():
-    return {"devices": Device.all()}
+    return {"devices": Device.all_to_api()}
 
 @api.get('/devices/<id>')
 def get_device(id):
@@ -50,7 +51,7 @@ def get_device_params(id, name):
 
 @api.get('/actions')
 def get_actions():
-    return {"actions": Action.all()}
+    return {"actions": Action.all_to_api()}
 
 @api.get('/actions/<name>')
 def get_action(name):
@@ -92,6 +93,10 @@ def get_device_infos(id):
     else:
         return HTTPError(404)
 
-@api.route('/devices/<id>/infos/<name>', method=['POST', 'OPTIONS'])
+@api.route('/devices/<id>/infos', method=['POST', 'OPTIONS'])
 def post_device_infos(id, name):
-    return ""
+    device = Device.to_api(id)
+    if device:
+        return self.core.update_infos
+    else:
+        return HTTPError(404)

@@ -50,5 +50,13 @@ class BaseDriver(object):
         query.update(self._base_query())
         return self._devices.remove(query)
 
+    def update_infos(self, device, data):
+        device = self.device(device.id)
+
+        if not device:
+            return False
+
+        self.update(device, {'infos': data})
+
     def do(self, device, action, **kwargs):
         pass

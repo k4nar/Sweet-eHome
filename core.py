@@ -10,7 +10,6 @@ class Core(object):
         self.wrappers = self.get_all_wrappers()
 
     def do(self, device, action, **kwargs):
-        print self.wrappers
         driver = device["driver"]
         if not driver in self.wrappers:
             return False
@@ -20,8 +19,6 @@ class Core(object):
                 return False
 
         return self.wrappers[driver].do(device, action, **kwargs)
-
-
 
     def get_all_wrappers(self):
         from libs import libs
@@ -37,6 +34,16 @@ class Core(object):
                 self.logger.warning("Can't import module {}: {}".format(lib, e))
 
         return wrappers
+
+    def update_infos(self, device, data):
+        driver = device["driver"]
+        wrapper = self.wrappers.get(driver)
+
+        if not wrapper:
+            return False
+
+        return devices.update_infos(device, data)
+
 
 class CoreManager(BaseManager):
     def __init__(self):
