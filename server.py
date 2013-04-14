@@ -39,7 +39,7 @@ def get_device_params(id):
 def get_device_params(id, name):
     device = Device.to_api(id)
     if device:
-        if device.params.has_key(name):
+        if device["params"].has_key(name):
             return {name: device["params"][name]}
         else:
             return HTTPError(404)
