@@ -84,7 +84,7 @@ def post_action(id, name):
 
 #### User information routes ####
 
-@api.route('/devices/<id>/infos', method=['POST', 'OPTIONS'])
+@api.get('/devices/<id>/infos')
 def get_device_infos(id):
     device = Device.to_api(id)
     if device:
@@ -92,7 +92,6 @@ def get_device_infos(id):
     else:
         return HTTPError(404)
 
-#@api.option('/devices/<id>/infos/<name>')
-@api.post('/devices/<id>/infos/<name>')
+@api.route('/devices/<id>/infos/<name>', method=['POST', 'OPTIONS'])
 def post_device_infos(id, name):
     return ""

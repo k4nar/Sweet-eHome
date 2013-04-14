@@ -3,6 +3,8 @@ from multiprocessing import Process
 from server import run
 from core import ProxyCore
 
+from logger import logger
+
 if __name__ == '__main__':
 
     core = ProxyCore()
