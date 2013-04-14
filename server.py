@@ -1,11 +1,16 @@
-from bottle import Bottle, HTTPError
+from bottle import Bottle, HTTPError, response
 
 from Devices import Device, Action
 
 api = Bottle()
 
 def run(core):
+    api.core = core
     api.run(host='localhost', port=1337)
+
+@api.hook('after_request')
+def enable_cors():
+    response.headers['Access-Control-Allow-Origin'] = '*'
 
 #### Devices routes ####
 
@@ -15,7 +20,7 @@ def get_devices():
 
 @api.get('/devices/<id>')
 def get_device(id):
-    device = Device.by_id(id)
+    device = Device.to_api(id)
     if device:
         return device
     else:
@@ -23,7 +28,7 @@ def get_device(id):
 
 @api.get('/devices/<id>/params')
 def get_device_params(id):
-    device = Device.by_id(id)
+    device = Device.to_api(id)
     if device:
         return device["params"]
     else:
@@ -31,7 +36,7 @@ def get_device_params(id):
 
 @api.get('/devices/<id>/params/<name>')
 def get_device_params(id, name):
-    device = Device.by_id(id)
+    device = Device.to_api(id)
     if device:
         if device.params.has_key(name):
             return {name: device["params"][name]}
@@ -49,7 +54,7 @@ def get_actions():
 
 @api.get('/actions/<name>')
 def get_action(name):
-    action = Action.by_name(name)
+    action = Action.to_api(name)
     if action:
         return action
     else:
@@ -57,27 +62,37 @@ def get_action(name):
 
 @api.get('/devices/<id>/actions')
 def get_device_action(id):
-    device = Device.by_id(id)
+    device = Device.to_api(id)
     if device:
         return {"actions": device["actions"]}
     else:
         return HTTPError(404)
 
-@api.post('/devices/<id>/actions/<name>')
+@api.route('/devices/<id>/actions/<name>', method=['POST', 'OPTIONS'])
 def post_action(id, name):
-  return ""
+    device = Device.to_api(id)
+    action = Action.to_api(name)
+    if device and action:
+        args = dict([(args, request.forms.get(arg)) for arg in action["args"]])
+        if api.core.do(device, action, **args):
+            return HTTPError(204)
+        else:
+            return HTTPError(403)
+    else:
+        return HTTPError(404)
 
 
 #### User information routes ####
 
-@api.get('/devices/<id>/infos')
+@api.route('/devices/<id>/infos', method=['POST', 'OPTIONS'])
 def get_device_infos(id):
-    device = Device.by_id(id)
+    device = Device.to_api(id)
     if device:
         return device["infos"]
     else:
         return HTTPError(404)
 
+#@api.option('/devices/<id>/infos/<name>')
 @api.post('/devices/<id>/infos/<name>')
 def post_device_infos(id, name):
     return ""

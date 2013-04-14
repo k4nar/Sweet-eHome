@@ -36,15 +36,19 @@ class Device(Document):
     required_fields = ['id', 'driver']
 
     @staticmethod
-    def all():
+    def all_to_api():
         return [d.apize(shorten=True) for d in devices.Device.fetch()]
 
     @staticmethod
-    def by_id(id):
-        device = devices.Device.fetch_one({"id": id})
+    def to_api(id):
+        device = Device.by_id(id)
         if device:
             return device.apize()
         return None
+
+    @staticmethod
+    def by_id(id):
+        return devices.Device.fetch_one({"id": id})
 
     def url(self):
         return "/devices/{}".format(self.id)

@@ -28,15 +28,19 @@ class Action(Document):
     required_flags = ['name']
 
     @staticmethod
-    def all():
+    def all_to_api():
         return [a.apize(shorten=True) for a in actions.Action.fetch()]
 
     @staticmethod
-    def by_name(name):
-        action = actions.Action.fetch_one({"name": name})
+    def to_api(name):
+        action = Action.by_name(name)
         if action:
             return action.apize()
         return None
+
+    @staticmethod
+    def by_name(name):
+        return actions.Action.fetch_one({"name": name})
 
     def devices(self):
         return [{"url": device.url()} for device in db.devices.Device.fetch({"actions": {"$elemMatch": {'_id': self._id}}})]

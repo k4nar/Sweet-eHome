@@ -1,16 +1,22 @@
 from multiprocessing.managers import BaseManager
 
+from wrappers import get_all_wrappers
+
 class Core(object):
     def __init__(self):
         super(Core, self).__init__()
 
-        self.wrappers = {}
+        self.wrappers = get_all_wrappers(self)
 
     def do(self, device, action, **kwargs):
-        if not device.driver in self.wrappers:
+        driver = device["driver"]
+        if not driver in self.wrappers:
             return False
 
-        return self.wrappers[device.driver].do(device, action, **kwargs)
+        return self.wrappers[driver].do(device, action, **kwargs)
+
+    def set_wrappers(wrappers):
+        self.wrappers = wrappers
 
 class CoreManager(BaseManager):
     def __init__(self):
