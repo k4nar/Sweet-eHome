@@ -23,6 +23,13 @@ class Driver(BaseDriver):
         self.port = "4224"
         self.base_url = "http://{}:{}/api".format(self.address, self.port)
 
+        self.dumb_action_to_action = {
+            "turnOn": "on",
+            "turnOff": "off",
+        }
+
+        self.action_to_dumb_action = dict([(v, k) for k, v in self.dumb_action_to_action.iteritems()])
+
         self.broadcaster = Process(target=self._broadcaster)
         self.broadcaster.start()
 
@@ -47,19 +54,14 @@ class Driver(BaseDriver):
         return r.json()
 
     def _post(self, device, action, **kwargs):
-        r = requests.post(self._url("devices", device.id, action), data=kwargs)
+        r = requests.post(self._url("devices", device["id"], action), data=kwargs)
         if r.status_code == STATUS_OK:
             return True
         return False
 
     def _get_action(self, name):
-        actions = {
-            "turnOn": "on",
-            "turnOff": "off",
-        }
-
-        if name in actions:
-            name = actions[name]
+        if name in self.dumb_action_to_action:
+            name = self.dumb_action_to_action[name]
 
         return self.action(name)
 
@@ -98,8 +100,9 @@ class Driver(BaseDriver):
                     self._store(device)
 
     def do(self, device, action, **kwargs):
-        print device
-        print action
-        print kwargs
-        return True
-        #return self._post(device, action, **kwargs)
+        action_name = action["name"]
+        if action_name in self.action_to_dumb_action:
+            action_name = self.action_to_dumb_action[action_name]
+
+        print action_name
+        return self._post(device, action_name, **kwargs)
