@@ -56,7 +56,6 @@ class Driver(BaseDriver):
         actions = {
             "turnOn": "on",
             "turnOff": "off",
-            "toggle": ""
         }
 
         if name in actions:
@@ -64,9 +63,15 @@ class Driver(BaseDriver):
 
         return self.action(name)
 
-
     def _serialize(self, dumb_device):
-        actions = [self._get_action(name) for name in dumb_device["actions"].keys()]
+        actions = []
+        for name in dumb_device["actions"].keys():
+            action = self._get_action(name)
+            if action:
+                actions.append(action)
+
+        if "on" and "off" in actions:
+            actions.append(self.action("toggle"))
 
         return {
             "id": dumb_device["id"],
@@ -93,4 +98,8 @@ class Driver(BaseDriver):
                     self._store(device)
 
     def do(self, device, action, **kwargs):
-        return self._post(device, action, **kwargs)
+        print device
+        print action
+        print kwargs
+        return True
+        #return self._post(device, action, **kwargs)

@@ -36,7 +36,6 @@ class BaseDriver(object):
         device.update(attributes)
         device.update(self._base_query())
         device.save()
-        print device
 
     def update(self, device, attributes):
         return self._devices.update({'_id': device['_id']}, {'$set': attributes})

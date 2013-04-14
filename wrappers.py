@@ -1,16 +1,16 @@
-libs = {
-    "DumbDevices": 'DumbDevicesLib',
-    #"Zwave": 'ZwaveLib',
-}
+libs = [
+    'DumbDevicesLib',
+    #'ZwaveLib',
+]
 
 def get_all_wrappers(*args, **kwargs):
     wrappers = {}
 
-    for name, lib in libs.items():
+    for lib in libs:
         try:
-            driver = __import__(lib).Driver
+            driver = __import__(lib).Driver(*args, **kwargs)
 
-            wrappers[name] = driver(*args, **kwargs)
+            wrappers[driver.name] = driver
 
         except Exception, e:
             print "Can't import module", lib, ':', e

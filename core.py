@@ -1,13 +1,16 @@
 from multiprocessing.managers import BaseManager
 
-from Devices.device import devices
-
 class Core(object):
     def __init__(self):
         super(Core, self).__init__()
 
-        self.devices = devices
+        self.wrappers = {}
 
+    def do(self, device, action, **kwargs):
+        if not device.driver in self.wrappers:
+            return False
+
+        return self.wrappers[device.driver].do(device, action, **kwargs)
 
 class CoreManager(BaseManager):
     def __init__(self):

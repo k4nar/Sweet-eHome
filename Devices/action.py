@@ -15,8 +15,15 @@ class Action(Document):
     structure = {
         'name': basestring,
         'description': basestring,
-        'args': dict,
+        'args': [basestring],
     }
+
+    indexes = [
+        {
+            'fields': ['name'],
+            'unique': True,
+        },
+    ]
 
     required_flags = ['name']
 
@@ -31,41 +38,50 @@ class Action(Document):
             return action.apize()
         return None
 
+    def devices(self):
+        return [{"url": device.url()} for device in db.devices.Device.fetch({"actions": {"$elemMatch": {'_id': self._id}}})]
+
+    def url(self):
+        return "/actions/{}".format(self.name)
+
     def apize(self, shorten=False):
         out = dict(self)
 
         out.pop("_id")
 
-        out["url"] = "/actions/{}".format(self.name)
+        out["url"] = self.url()
+
+        if not shorten:
+            out["devices"] = self.devices()
 
         return out
 
 # All the known actions
-api_actions = [
+defined_actions = [
     {
         "name": "on",
         "description": "Turns on a device",
-        "args": {},
+        "args": [],
     },
     {
         "name": "off",
         "description": "Turns off a device",
-        "args": {},
+        "args": [],
     },
     {
         "name": "toggle",
         "description": "Toggles the on/off status of a device",
-        "args": {},
+        "args": [],
     },
     {
         "name": "variate",
         "description": "Change the variation of a device with a dimmer",
-        "args": {"var": ""},
+        "args": ["var"],
     },
 ]
 
 def init_actions():
-    for action in api_actions:
+    for action in defined_actions:
         if not Action.by_name(action["name"]):
             a = actions.Action()
             for k, v in action.items():

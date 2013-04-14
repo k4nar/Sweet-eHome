@@ -17,15 +17,21 @@ class Device(Document):
 
     structure = {
         'id': basestring,
-
         'driver': basestring,
-
-        'actions': [Action()],
-
+        'actions': [Action],
         'params': dict,
-
         'infos': dict,
     }
+
+    indexes = [
+        {
+            'fields': ['id'],
+            'unique': True,
+        },
+        {
+            'fields': ['driver']
+        }
+    ]
 
     required_fields = ['id', 'driver']
 
@@ -40,12 +46,14 @@ class Device(Document):
             return device.apize()
         return None
 
-    def apize(self, root="/devices", shorten=False):
-        out = dict(self)
+    def url(self):
+        return "/devices/{}".format(self.id)
 
+    def apize(self, shorten=False):
+        out = dict(self)
         out.pop("_id")
-        out.pop("id")
-        out["url"] = "{}/{}".format(root, self.id)
+
+        out["url"] = self.url()
         out["actions"] = self.all_actions()
 
         if shorten:
