@@ -2,5 +2,7 @@
 *.pyo
 *~
 \#*\#
-logs/*
+logs/*.txt
+logs/*.log
+
 
