@@ -1,3 +1,5 @@
+import json
+
 from bottle import Bottle, response
 
 from Devices import Device, Action
@@ -15,8 +17,8 @@ def run(core):
 @api.error(500)
 def error_handler(error):
     enable_cors()
-    response.headers['Content-Type'] = "application/json"
-    return "{}".format({"error": "Internal Server Error."})
+    response.content_type = "application/json"
+    return json.dumps({"error": "Internal Server Error."})
 
 
 @api.hook('after_request')
@@ -29,6 +31,7 @@ def enable_cors():
 
 @api.get('/devices')
 def get_devices():
+    foo
     return {"devices": Device.all_to_api()}
 
 
