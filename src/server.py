@@ -3,10 +3,14 @@ from bottle import Bottle, response
 from Devices import Device, Action
 
 api = Bottle()
+root = Bottle()
+root.mount('/api/v1', api)
+
 
 def run(core):
     api.core = core
-    api.run(host='localhost', port=1337)
+
+    root.run(host='localhost', port=1337)
 
 @api.error(403)
 @api.error(404)
