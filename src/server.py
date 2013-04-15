@@ -28,7 +28,6 @@ def enable_cors():
 
 @api.get('/devices')
 def get_devices():
-    auniestunireturaisetrsuiaetr
     return {"devices": Device.all_to_api()}
 
 
@@ -125,6 +124,9 @@ def get_device_infos(id):
 def post_device_infos(id, name):
     device = Device.to_api(id)
     if device:
+        if not device["connected"]:
+            response.status = 403
+            return {"error": "Device {} is not connected".format(id)}
         if self.core.update_infos():
             response.status = 204
         else:

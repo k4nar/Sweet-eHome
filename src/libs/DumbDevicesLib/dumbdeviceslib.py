@@ -94,6 +94,7 @@ class Driver(BaseDriver):
         return {
             "id": dumb_device["id"],
             "params": dumb_device["properties"],
+            "connected": True,
             "actions": actions,
             "infos": {"type": dumb_device["type"]}
         }

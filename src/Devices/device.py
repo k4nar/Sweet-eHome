@@ -18,6 +18,7 @@ class Device(Document):
     structure = {
         'id': basestring,
         'driver': basestring,
+        'connected': bool,
         'actions': [Action],
         'params': dict,
         'infos': dict,
@@ -72,3 +73,7 @@ class Device(Document):
             return action
 
         return [_apize_action(a) for a in self.actions if a]
+
+def disconnect_all():
+    for device in devices.Device.fetch():
+        device.connected = False
