@@ -77,3 +77,4 @@ class Device(Document):
 def disconnect_all():
     for device in devices.Device.fetch():
         device.connected = False
+        device.save()
