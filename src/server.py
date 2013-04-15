@@ -15,6 +15,7 @@ def run(core):
 @api.error(500)
 def error_handler(error):
     enable_cors()
+    response.headers['Content-Type'] = "application/json"
     return "{}".format({"error": "Internal Server Error."})
 
 
