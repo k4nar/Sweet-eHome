@@ -45,7 +45,7 @@ class Driver(BaseDriver):
         try:
             r = requests.get(self._url("devices"))
         except:
-            logger.error(self.ERROR_NO_CONNECTION)
+            logger.info(self.ERROR_NO_CONNECTION)
             return None
 
         if r.status_code != STATUS_OK:
@@ -57,7 +57,7 @@ class Driver(BaseDriver):
         try:
             r = requests.get(self._url("devices", id))
         except:
-            logger.error(self.ERROR_NO_CONNECTION)
+            logger.info(self.ERROR_NO_CONNECTION)
             return None
 
         if r.status_code != STATUS_OK:
@@ -69,7 +69,7 @@ class Driver(BaseDriver):
         try:
             r = requests.post(self._url("devices", device["id"], action), data=kwargs)
         except:
-            logger.error(self.ERROR_NO_CONNECTION)
+            logger.info(self.ERROR_NO_CONNECTION)
             return False
 
         if r.status_code == STATUS_OK:
