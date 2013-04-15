@@ -1,13 +1,16 @@
+from multiprocessing.managers import BaseManager
+
 from Devices import devices, actions
 
 class BaseDriver(object):
     """Base class for DomoLib drivers implementations"""
-    def __init__(self, core):
+
+    name = "BaseDriver"
+
+    def __init__(self):
         super(BaseDriver, self).__init__()
 
-        self.name = "BaseDriver"
-
-        self._core = core
+        self._core = None
         self._devices = devices
         self._actions = actions
 

@@ -14,21 +14,23 @@ class Driver(BaseDriver):
     Implementation of DomoLib driver for DumbDevices protocol
     """
 
-    def __init__(self, core):
-        super(Driver, self).__init__(core)
+    name = "DumbDevicesDriver"
 
-        self.name = "DumbDevicesDriver"
+    address = "127.0.0.1"
+    port = "4224"
+    base_url = "http://{}:{}/api".format(address, port)
 
-        self.address = "127.0.0.1"
-        self.port = "4224"
-        self.base_url = "http://{}:{}/api".format(self.address, self.port)
+    ERROR_NO_CONNECTION = "Can't connect to DumbDevices server at {}:{}".format(address, port)
 
-        self.dumb_action_to_action = {
-            "turnOn": "on",
-            "turnOff": "off",
-        }
+    dumb_action_to_action = {
+        "turnOn": "on",
+        "turnOff": "off",
+    }
 
-        self.action_to_dumb_action = dict([(v, k) for k, v in self.dumb_action_to_action.iteritems()])
+    action_to_dumb_action = dict([(v, k) for k, v in dumb_action_to_action.iteritems()])
+
+    def __init__(self):
+        super(Driver, self).__init__()
 
         self.broadcaster = Process(target=self._broadcaster)
         self.broadcaster.start()
@@ -38,7 +40,11 @@ class Driver(BaseDriver):
         return "/".join([self.base_url] + list(args))
 
     def _get_dumb_devices(self):
-        r = requests.get(self._url("devices"))
+        try:
+            r = requests.get(self._url("devices"))
+        except:
+            self.core.logger.error(self.ERROR_NO_CONNECTION)
+            return None
 
         if r.status_code != STATUS_OK:
             return None
@@ -46,7 +52,11 @@ class Driver(BaseDriver):
         return r.json()
 
     def _get_dumb_device(self, id):
-        r = requests.get(self._url("devices", id))
+        try:
+            r = requests.get(self._url("devices", id))
+        except:
+            self.core.logger.error(self.ERROR_NO_CONNECTION)
+            return None
 
         if r.status_code != STATUS_OK:
             return None
@@ -54,9 +64,15 @@ class Driver(BaseDriver):
         return r.json()
 
     def _post(self, device, action, **kwargs):
-        r = requests.post(self._url("devices", device["id"], action), data=kwargs)
+        try:
+            r = requests.post(self._url("devices", device["id"], action), data=kwargs)
+        except:
+            self.core.logger.error(self.ERROR_NO_CONNECTION)
+            return False
+
         if r.status_code == STATUS_OK:
             return True
+
         return False
 
     def _get_action(self, name):
@@ -105,3 +121,4 @@ class Driver(BaseDriver):
             action_name = self.action_to_dumb_action[action_name]
 
         return self._post(device, action_name, **kwargs)
+

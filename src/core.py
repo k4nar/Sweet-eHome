@@ -24,17 +24,28 @@ class Core(object):
         return self.wrappers[driver].do(device, action, **kwargs)
 
     def get_all_wrappers(self):
-
-
         wrappers = {}
+        drivers = []
+
+        class DriverManager(BaseManager):
+            pass
 
         for lib in libs:
             try:
-                driver = import_module("libs.{}".format(lib)).Driver(self)
-                wrappers[driver.name] = driver
-
+                driver = import_module("libs.{}".format(lib)).Driver
+                DriverManager.register(driver.name, driver)
+                drivers.append(driver.name)
             except Exception, e:
                 self.logger.warning("Can't import module {}: {}".format(lib, e))
+
+        manager = DriverManager()
+        manager.start()
+
+        for name in drivers:
+            try:
+                wrappers[name] = manager.__getattribute__(name)()
+            except Exception, e:
+                self.logger.warning("Can't start {}: {}".format(driver, e))
 
         return wrappers
 

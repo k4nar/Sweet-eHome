@@ -9,26 +9,28 @@ root.mount('/api/v1', api)
 
 def run(core):
     api.core = core
-
     root.run(host='localhost', port=1337)
 
-@api.error(403)
-@api.error(404)
-@api.error(204)
+
+@api.error(500)
 def error_handler(error):
     enable_cors()
-    return api.default_error_handler(error)
+    return "{}".format({"error": "Internal Server Error."})
+
 
 @api.hook('after_request')
 def enable_cors():
     response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
     response.headers['Access-Control-Allow-Origin'] = '*'
 
-#### Devices routes ####
+# Devices routes ####
+
 
 @api.get('/devices')
 def get_devices():
+    auniestunireturaisetrsuiaetr
     return {"devices": Device.all_to_api()}
+
 
 @api.get('/devices/<id>')
 def get_device(id):
@@ -37,6 +39,8 @@ def get_device(id):
         return device
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
+
 
 @api.get('/devices/<id>/params')
 def get_device_params(id):
@@ -45,6 +49,7 @@ def get_device_params(id):
         return device["params"]
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
 
 
 @api.get('/devices/<id>/params/<name>')
@@ -55,15 +60,18 @@ def get_device_params(id, name):
             return {name: device["params"][name]}
         else:
             response.status = 404
+            return {"error": "Params {} not found in device {}.".format(name, id)}
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
 
 
-#### Action routes ####
+# Action routes ####
 
 @api.get('/actions')
 def get_actions():
     return {"actions": Action.all_to_api()}
+
 
 @api.get('/actions/<name>')
 def get_action(name):
@@ -72,6 +80,8 @@ def get_action(name):
         return action
     else:
         response.status = 404
+        return {"error": "Action {} not found.".format(name)}
+
 
 
 @api.get('/devices/<id>/actions')
@@ -81,6 +91,8 @@ def get_device_action(id):
         return {"actions": device["actions"]}
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
+
 
 @api.route('/devices/<id>/actions/<name>', method=['POST', 'OPTIONS'])
 def post_action(id, name):
@@ -92,11 +104,12 @@ def post_action(id, name):
             response.status = 204
         else:
             response.status = 403
+            return {"error": "Impossible to do action {} for device {} with args {}".format(name, id, args)}
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
 
-
-#### User information routes ####
+# User information routes ####
 
 @api.get('/devices/<id>/infos')
 def get_device_infos(id):
@@ -105,11 +118,18 @@ def get_device_infos(id):
         return device["infos"]
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
+
 
 @api.route('/devices/<id>/infos', method=['POST', 'OPTIONS'])
 def post_device_infos(id, name):
     device = Device.to_api(id)
     if device:
-        return self.core.update_infos
+        if self.core.update_infos():
+            response.status = 204
+        else:
+            response.status = 403
+            return {"error": "Impossible to set infos for device {}".format(id)}
     else:
         response.status = 404
+        return {"error": "Device {} not found.".format(id)}
