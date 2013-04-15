@@ -41,6 +41,11 @@ def get_device(id):
         return {"error": "Device {} not found.".format(id)}
 
 
+#@api.get('/devices')
+#def request_devices():
+#    print request.params
+
+
 @api.get('/devices/<id>/params')
 def get_device_params(id):
     device = Device.to_api(id)
@@ -63,7 +68,6 @@ def get_device_params(id, name):
     else:
         response.status = 404
         return {"error": "Device {} not found.".format(id)}
-
 
 # Action routes ####
 
@@ -98,7 +102,12 @@ def post_action(id, name):
     device = Device.to_api(id)
     action = Action.to_api(name)
     if device and action:
+        if not device["connected"]:
+            response.status = 403
+            return {"error": "Device {} is not connected.".format(id)}
+
         args = dict([(args, request.forms.get(arg)) for arg in action["args"]])
+
         if api.core.do(device, action, **args):
             response.status = 204
         else:
@@ -124,9 +133,6 @@ def get_device_infos(id):
 def post_device_infos(id, name):
     device = Device.to_api(id)
     if device:
-        if not device["connected"]:
-            response.status = 403
-            return {"error": "Device {} is not connected".format(id)}
         if self.core.update_infos():
             response.status = 204
         else:

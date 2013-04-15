@@ -6,10 +6,13 @@ import requests
 
 from DomoLib import BaseDriver
 
+from logger import logger
+
 STATUS_OK = 200
 
 
 class Driver(BaseDriver):
+
     """
     Implementation of DomoLib driver for DumbDevices protocol
     """
@@ -35,7 +38,6 @@ class Driver(BaseDriver):
         self.broadcaster = Process(target=self._broadcaster)
         self.broadcaster.start()
 
-
     def _url(self, *args):
         return "/".join([self.base_url] + list(args))
 
@@ -43,7 +45,7 @@ class Driver(BaseDriver):
         try:
             r = requests.get(self._url("devices"))
         except:
-            self.core.logger.error(self.ERROR_NO_CONNECTION)
+            logger.error(self.ERROR_NO_CONNECTION)
             return None
 
         if r.status_code != STATUS_OK:
@@ -55,7 +57,7 @@ class Driver(BaseDriver):
         try:
             r = requests.get(self._url("devices", id))
         except:
-            self.core.logger.error(self.ERROR_NO_CONNECTION)
+            logger.error(self.ERROR_NO_CONNECTION)
             return None
 
         if r.status_code != STATUS_OK:
@@ -67,7 +69,7 @@ class Driver(BaseDriver):
         try:
             r = requests.post(self._url("devices", device["id"], action), data=kwargs)
         except:
-            self.core.logger.error(self.ERROR_NO_CONNECTION)
+            logger.error(self.ERROR_NO_CONNECTION)
             return False
 
         if r.status_code == STATUS_OK:
@@ -122,4 +124,3 @@ class Driver(BaseDriver):
             action_name = self.action_to_dumb_action[action_name]
 
         return self._post(device, action_name, **kwargs)
-

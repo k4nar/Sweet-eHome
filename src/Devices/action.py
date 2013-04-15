@@ -85,9 +85,9 @@ defined_actions = [
 ]
 
 def init_actions():
+    actions.drop()
     for action in defined_actions:
-        if not Action.by_name(action["name"]):
-            a = actions.Action()
-            for k, v in action.items():
-                a[k] = v
-            a.save()
+        a = actions.Action()
+        for k, v in action.items():
+            a[k] = v
+        a.save()
