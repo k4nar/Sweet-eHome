@@ -1,6 +1,6 @@
 import json
 
-from bottle import Bottle, response
+from bottle import Bottle, response, request
 
 from Devices import Device, Action
 
@@ -31,7 +31,6 @@ def enable_cors():
 
 @api.get('/devices')
 def get_devices():
-    foo
     return {"devices": Device.all_to_api()}
 
 
@@ -110,7 +109,7 @@ def post_action(id, name):
             response.status = 403
             return {"error": "Device {} is not connected.".format(id)}
 
-        args = dict([(args, request.forms.get(arg)) for arg in action["args"]])
+        args = dict([(arg, request.forms.get(arg)) for arg in action["args"]])
 
         if api.core.do(device, action, **args):
             response.status = 204
