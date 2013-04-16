@@ -56,7 +56,7 @@ class Core(object):
         if not wrapper:
             return False
 
-        return devices.update_infos(device, data)
+        return wrapper.update_infos(device, data)
 
 
 class CoreManager(BaseManager):

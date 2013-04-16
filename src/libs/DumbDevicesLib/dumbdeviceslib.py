@@ -93,11 +93,13 @@ class Driver(BaseDriver):
         if "on" and "off" in actions:
             actions.append(self.action("toggle"))
 
+        properties = dumb_device["properties"]
+        properties.update({"type": dumb_device["type"]})
+
         return {
             "params": dumb_device["properties"],
             "connected": True,
             "actions": actions,
-            "infos": {"type": dumb_device["type"]}
         }
 
     def _store(self, dumb_device):

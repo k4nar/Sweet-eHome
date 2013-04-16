@@ -150,10 +150,14 @@ def get_device_infos(id):
 
 
 @api.route('/devices/<id>/infos', method=['POST', 'OPTIONS'])
-def post_device_infos(id, name):
+def post_device_infos(id):
     device = Device.to_api(id)
     if device:
-        if self.core.update_infos():
+        infos = request.json
+        if not infos:
+            response.status = 204
+            return
+        if api.core.update_infos(device, infos):
             response.status = 204
         else:
             response.status = 403

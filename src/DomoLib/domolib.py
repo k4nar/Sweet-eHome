@@ -42,7 +42,7 @@ class BaseDriver(object):
     def new(self, id, attributes):
         id = self._get_id(id)
 
-        if self._devices.Device.fetch({"id": id}):
+        if self._devices.Device.fetch_one({"id": id}):
             return
 
         device = self._devices.Device()
@@ -54,10 +54,11 @@ class BaseDriver(object):
 
     def update(self, device, attributes):
         attributes.update({"_last_updated": int(time())})
-        return self._devices.update({'_id': device['_id']}, {'$set': attributes})
+        return self._devices.update({"_id": device["_id"]}, {'$set': attributes})
 
     def save(self, device):
         if device:
+            device._last_updated = int(time())
             return device.save()
         return False
 
@@ -67,15 +68,18 @@ class BaseDriver(object):
         return self._devices.remove(query)
 
     def update_infos(self, device, data):
-        device = self.device(device.id)
+        device = self._devices.Device.fetch_one({"id": device["id"]})
 
         if not device:
             return False
 
-        self.update(device, {'infos': data})
+        device.infos.update(data)
+        self.save(device)
+
+        return True
 
     def equals(self, a, b):
-        for k in ["connected", "params", "infos"]:
+        for k in ["connected", "params"]:
             if a[k] != b[k]:
                 return False
         return True
