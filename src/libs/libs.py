@@ -2,7 +2,7 @@ from logger import logger
 
 libs = [
     'DumbDevicesLib',
-    #'ZwaveLib',
+    'ZwaveLib',
 ]
 
 def get_all_wrappers(*args, **kwargs):
