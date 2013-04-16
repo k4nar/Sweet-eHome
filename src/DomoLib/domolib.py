@@ -1,3 +1,5 @@
+from time import time
+
 from multiprocessing.managers import BaseManager
 
 from Devices import devices, actions
@@ -37,10 +39,12 @@ class BaseDriver(object):
     def new(self, attributes):
         device = self._devices.Device()
         device.update(attributes)
+        device._last_updated = int(time())
         device.update(self._base_query())
         device.save()
 
     def update(self, device, attributes):
+        attributes.update({"_last_updated": int(time())})
         return self._devices.update({'_id': device['_id']}, {'$set': attributes})
 
     def save(self, device):
@@ -60,6 +64,12 @@ class BaseDriver(object):
             return False
 
         self.update(device, {'infos': data})
+
+    def equals(self, a, b):
+        for k in ["connected", "params", "infos"]:
+            if a[k] != b[k]:
+                return False
+        return True
 
     def do(self, device, action, **kwargs):
         pass

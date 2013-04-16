@@ -44,11 +44,6 @@ def get_device(id):
         return {"error": "Device {} not found.".format(id)}
 
 
-#@api.get('/devices')
-#def request_devices():
-#    print request.params
-
-
 @api.get('/devices/<id>/params')
 def get_device_params(id):
     device = Device.to_api(id)
@@ -74,6 +69,7 @@ def get_device_params(id, name):
 
 # Action routes ####
 
+
 @api.get('/actions')
 def get_actions():
     return {"actions": Action.all_to_api()}
@@ -87,7 +83,6 @@ def get_action(name):
     else:
         response.status = 404
         return {"error": "Action {} not found.".format(name)}
-
 
 
 @api.get('/devices/<id>/actions')
@@ -122,6 +117,7 @@ def post_action(id, name):
 
 # User information routes ####
 
+
 @api.get('/devices/<id>/infos')
 def get_device_infos(id):
     device = Device.to_api(id)
@@ -144,3 +140,8 @@ def post_device_infos(id, name):
     else:
         response.status = 404
         return {"error": "Device {} not found.".format(id)}
+
+# Updates routes
+@api.get('/updates/<timestamp>')
+def get_updates(timestamp):
+    return {"devices": Device.get_updated_since(int(timestamp))}

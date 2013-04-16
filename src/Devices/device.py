@@ -16,6 +16,8 @@ class Device(Document):
     __collection__ = 'devices'
 
     structure = {
+        '_last_updated': int,
+
         'id': basestring,
         'driver': basestring,
         'connected': bool,
@@ -30,11 +32,13 @@ class Device(Document):
             'unique': True,
         },
         {
-            'fields': ['driver']
+            'fields': ['driver', '_last_updated']
         }
     ]
 
     required_fields = ['id', 'driver']
+
+    default_values = {'connected': False}
 
     @staticmethod
     def all_to_api():
@@ -51,18 +55,32 @@ class Device(Document):
     def by_id(id):
         return devices.Device.fetch_one({"id": id})
 
+    @staticmethod
+    def get_updated_since(timestamp):
+        updated = []
+        for device in devices.Device.fetch({"_last_updated": {"$gt": timestamp}}):
+            d = device.apize()
+            d.pop("actions")
+            updated.append(d)
+        return updated
+
     def url(self):
         return "/devices/{}".format(self.id)
 
-    def apize(self, shorten=False):
+    def apize(self, shorten=False, actions=True):
         out = dict(self)
         out.pop("_id")
+        out.pop("_last_updated")
 
         out["url"] = self.url()
-        out["actions"] = self.all_actions()
+        if actions:
+            if shorten:
+                out["actions"] = "{}/actions".format(out["url"])
+            else:
+                out["actions"] = self.all_actions()
 
         if shorten:
-            for e in ["actions", "params", "infos"]:
+            for e in ["params", "infos"]:
                 out[e] = "{}/{}".format(out["url"], e)
 
         return out

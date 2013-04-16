@@ -106,7 +106,8 @@ class Driver(BaseDriver):
 
         device = self.device(dumb_device["id"])
         if device:
-            return self.update(device, p)
+            if not self.equals(device, p):
+                return self.update(device, p)
         else:
             return self.new(p)
 
