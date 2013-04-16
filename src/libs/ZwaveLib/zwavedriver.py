@@ -12,7 +12,7 @@ class Driver(BaseDriver):
         super(Driver, self).__init__()
 
         self.options = openzwave.PyOptions()
-        self.options.create("src/libs/ZwaveLib/config/", "", "")
+        self.options.create("src/libs/ZwaveLib/config/", "src/libs/ZwaveLib/user/", "")
         self.options.lock()
 
         self.manager = openzwave.PyManager()
@@ -35,15 +35,14 @@ class Driver(BaseDriver):
             }
 
     def _updateNode(self, args):
-        arguments = { "id": str(args['nodeId']),
-                      "connected": False,
+        arguments = { "connected": False,
                       "params": {"homeid": args['homeId']}
                       }
         device = self.device(str(args["nodeId"]))
         if device:
             self.update(device, arguments)
         else:
-            self.new(arguments)
+            self.new(args['nodeId'], arguments)
 
     def _updateValue(self, args):
         if (args['valueId'] and (args['valueId']['label'] == "Basic"
@@ -66,14 +65,6 @@ class Driver(BaseDriver):
 
     def _variate(self, device, **kwargs):
         self.manager.SetNodeLevel(device['params']['homeId'], int(device['id']), kwargs['var'])
-
-    def _serialize(self, args):
-        return {"id": str(args['nodeId']),
-                "connected": True,
-                "params": {"value": args['valueId']['value'],
-                           "homeid": args['homeId']
-                           }
-                }
 
     def receive(self, args):
         self.notifications[args['notificationType']](args)

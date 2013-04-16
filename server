@@ -1,0 +1,35 @@
+#!/bin/sh -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DAEMON=$DIR/src/main.py
+PIDDIR=$DIR/logs/
+PIDFILE=$PIDDIR/pid
+DAEMONUSER=$SUDO_USER
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+server_start () {
+    echo "Starting Sweet-eHome Server Daemon..."
+    ./src/main.py > /dev/null 2>&1 &
+    echo "Done! :)"
+}
+
+server_stop () {
+    echo "Stopping Sweet-eHome Server Daemon... :( "
+    killall -q main.py && echo "Done"|| echo "...which is not running"
+}
+
+case "$1" in
+    start|stop)
+	server_${1}
+	;;
+    restart)
+        server_stop
+        server_start
+        ;;
+    *)
+        echo "Usage: ./server {start|stop|restart}"
+        exit 1
+	;;
+esac
+
+exit 0

@@ -7,7 +7,7 @@ Abstract layer for home automation protocols, accessible through a RESTful API.
 * `sudo pip -r requirements.txt`
 * Install and run a MongoDB server
 
-Now, you can run `server --start` to start rocking !
+Now, you can run `server start` to start rocking !
 
 ## API
 The API is described [here](http://docs.sweetehome.apiary.io/).
