@@ -170,6 +170,6 @@ def post_device_infos(id):
 # Updates routes ####
 
 
-@api.get('/updates/<timestamp>')
-def get_updates(timestamp):
-    return {"devices": Device.get_updated_since(int(timestamp))}
+@api.get('/updates/<since>')
+def get_updates(since):
+    return {"devices": Device.get_updated_since(int(since))}

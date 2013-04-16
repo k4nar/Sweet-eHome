@@ -1,3 +1,5 @@
+import time
+
 from mongokit import Document
 
 from connection import connection, db
@@ -56,7 +58,8 @@ class Device(Document):
         return devices.Device.fetch_one({"id": id})
 
     @staticmethod
-    def get_updated_since(timestamp):
+    def get_updated_since(seconds):
+        timestamp = time.time() - seconds
         updated = []
         for device in devices.Device.fetch({"_last_updated": {"$gt": timestamp}}):
             d = device.apize()
