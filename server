@@ -9,7 +9,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 server_start () {
     echo "Starting Sweet-eHome Server Daemon..."
-    ./src/main.py > /dev/null 2>&1 &
+    ./src/main.py #> /dev/null 2>&1 &
     echo "Done! :)"
 }
 
