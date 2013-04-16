@@ -35,7 +35,12 @@ class Driver(BaseDriver):
             }
 
     def _updateNode(self, args):
+        actions = []
+        actions.append(self.action("on"))
+        actions.append(self.action("off"))
+        actions.append(self.action("variate"))
         arguments = { "connected": False,
+                      "actions": actions,
                       "params": {"homeid": args['homeId']}
                       }
         device = self.device(str(args["nodeId"]))
@@ -48,7 +53,14 @@ class Driver(BaseDriver):
         if (args['valueId'] and (args['valueId']['label'] == "Basic"
                                 or args['valueId']['label'] == "Level")):
             device = self.device(str(args["nodeId"]))
-            if device:
+            if device and args['valueId']['label'] == "Sensor":
+                arguments = { "connected": True,
+                              "params": {"value": args['valueId']['value'],
+                                         "actions": [],
+                                         "homeId": args['homeId']}
+                              }
+                self.update(device, arguments)
+            elif device:
                 arguments = { "connected": True,
                               "params": {"value": args['valueId']['value'],
                                          "homeId": args['homeId']}
@@ -60,15 +72,22 @@ class Driver(BaseDriver):
 
     def _turnOn(self, device, **kwargs):
         self.manager.setNodeOn(device['params']['homeId'], int(self.get_id(device)))
+        return True
 
     def _turnOff(self, device, **kwargs):
         self.manager.setNodeOff(device['params']['homeId'], int(self.get_id(device)))
+        return True
 
     def _variate(self, device, **kwargs):
-        self.manager.setNodeLevel(device['params']['homeId'], int(self.get_id(device)), kwargs['var'])
+        try:
+            print kwargs
+            self.manager.setNodeLevel(device['params']['homeId'], int(self.get_id(device)), int(kwargs['var']))
+            return True
+        except:
+            return False
 
     def receive(self, args):
         self.notifications[args['notificationType']](args)
 
     def do(self, device, action, **kwargs):
-        self.actions[action["name"]](device, **kwargs)
+        return self.actions[action["name"]](device, **kwargs)
