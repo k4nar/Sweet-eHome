@@ -14,6 +14,8 @@ def run(core):
     root.run(host='localhost', port=1337)
 
 
+@api.error(400)
+@api.error(405)
 @api.error(500)
 def error_handler(error):
     enable_cors()
@@ -26,12 +28,21 @@ def enable_cors():
     response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With'
     response.headers['Access-Control-Allow-Origin'] = '*'
 
+
 # Devices routes ####
 
 
 @api.get('/devices')
 def get_devices():
-    return {"devices": Device.all_to_api()}
+    query = {}
+    for k in request.params.keys():
+        query[k] = request.params.get(k)
+    return {"devices": Device.all_to_api(query)}
+
+
+@api.route('/devices', method=['POST', 'OPTIONS'])
+def query_devices():
+    return {"devices": Device.all_to_api(request.json)}
 
 
 @api.get('/devices/<id>')
@@ -67,12 +78,21 @@ def get_device_params(id, name):
         response.status = 404
         return {"error": "Device {} not found.".format(id)}
 
+
 # Action routes ####
 
 
 @api.get('/actions')
 def get_actions():
-    return {"actions": Action.all_to_api()}
+    query = {}
+    for k in request.params.keys():
+        query[k] = request.params.get(k)
+    return {"actions": Action.all_to_api(query)}
+
+
+@api.route('/actions', method=['POST', 'OPTIONS'])
+def query_devices():
+    return {"actions": Device.all_to_api(request.json)}
 
 
 @api.get('/actions/<name>')
@@ -115,6 +135,7 @@ def post_action(id, name):
         response.status = 404
         return {"error": "Device {} not found.".format(id)}
 
+
 # User information routes ####
 
 
@@ -141,7 +162,10 @@ def post_device_infos(id, name):
         response.status = 404
         return {"error": "Device {} not found.".format(id)}
 
-# Updates routes
+
+# Updates routes ####
+
+
 @api.get('/updates/<timestamp>')
 def get_updates(timestamp):
     return {"devices": Device.get_updated_since(int(timestamp))}

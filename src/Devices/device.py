@@ -41,8 +41,8 @@ class Device(Document):
     default_values = {'connected': False}
 
     @staticmethod
-    def all_to_api():
-        return [d.apize(shorten=True) for d in devices.Device.fetch()]
+    def all_to_api(query=None):
+        return [d.apize(shorten=True) for d in devices.Device.fetch(query)]
 
     @staticmethod
     def to_api(id):
