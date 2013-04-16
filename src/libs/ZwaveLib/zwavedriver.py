@@ -50,7 +50,8 @@ class Driver(BaseDriver):
             device = self.device(str(args["nodeId"]))
             if device:
                 arguments = { "connected": True,
-                              "params": {"value": args['valueId']['value']}
+                              "params": {"value": args['valueId']['value'],
+                                         "homeId": args['homeId']}
                               }
                 self.update(device, arguments)
             else:
@@ -58,16 +59,16 @@ class Driver(BaseDriver):
             
 
     def _turnOn(self, device, **kwargs):
-        self.manager.SetNodeOn(device['params']['homeId'], int(device['id']))
+        self.manager.setNodeOn(device['params']['homeId'], int(self.get_id(device)))
 
     def _turnOff(self, device, **kwargs):
-        self.manager.SetNodeOff(device['params']['homeId'], int(device['id']))
+        self.manager.setNodeOff(device['params']['homeId'], int(self.get_id(device)))
 
     def _variate(self, device, **kwargs):
-        self.manager.SetNodeLevel(device['params']['homeId'], int(device['id']), kwargs['var'])
+        self.manager.setNodeLevel(device['params']['homeId'], int(self.get_id(device)), kwargs['var'])
 
     def receive(self, args):
         self.notifications[args['notificationType']](args)
 
     def do(self, device, action, **kwargs):
-        self.actions[action["name"]](device, action, kwargs)
+        self.actions[action["name"]](device, **kwargs)
