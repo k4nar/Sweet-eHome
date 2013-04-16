@@ -11,7 +11,7 @@ root.mount('/api/v1', api)
 
 def run(core):
     api.core = core
-    root.run(host='localhost', port=1337)
+    root.run(host='0.0.0.0', port=1337)
 
 
 @api.error(400)
