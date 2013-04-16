@@ -19,6 +19,9 @@ class BaseDriver(object):
     def _base_query(self):
         return {'driver': self.name}
 
+    def _get_id(self, id):
+        return "{}_{}".format(self.name, id)
+
     def devices(self, query=None):
         if query:
             query.update(self._base_query())
@@ -28,7 +31,7 @@ class BaseDriver(object):
         return self._devices.Device.fetch(query)
 
     def device(self, id):
-        query = {'id': id}
+        query = {'id': self._get_id(id)}
         query.update(self._base_query())
 
         return self._devices.Device.fetch_one(query)
@@ -36,9 +39,15 @@ class BaseDriver(object):
     def action(self, name):
         return self._actions.Action.fetch_one({"name": name})
 
-    def new(self, attributes):
+    def new(self, id, attributes):
+        id = self._get_id(id)
+
+        if self._devices.Device.fetch({"id": id}):
+            return
+
         device = self._devices.Device()
         device.update(attributes)
+        device.id = id
         device._last_updated = int(time())
         device.update(self._base_query())
         device.save()

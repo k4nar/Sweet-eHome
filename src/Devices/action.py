@@ -28,8 +28,8 @@ class Action(Document):
     required_flags = ['name']
 
     @staticmethod
-    def all_to_api():
-        return [a.apize(shorten=True) for a in actions.Action.fetch()]
+    def all_to_api(query=None):
+        return [a.apize(shorten=True) for a in actions.Action.fetch(query)]
 
     @staticmethod
     def to_api(name):

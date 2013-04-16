@@ -94,7 +94,6 @@ class Driver(BaseDriver):
             actions.append(self.action("toggle"))
 
         return {
-            "id": dumb_device["id"],
             "params": dumb_device["properties"],
             "connected": True,
             "actions": actions,
@@ -109,7 +108,7 @@ class Driver(BaseDriver):
             if not self.equals(device, p):
                 return self.update(device, p)
         else:
-            return self.new(p)
+            return self.new(dumb_device["id"], p)
 
     def _broadcaster(self):
         while 1:
