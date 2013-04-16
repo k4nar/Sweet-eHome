@@ -79,7 +79,7 @@ defined_actions = [
     },
     {
         "name": "variate",
-        "description": "Change the variation of a device with a dimmer",
+        "description": "Change the variation of a device with a dimmer. Take an argument 'var' between 0 and 99.",
         "args": ["var"],
     },
 ]

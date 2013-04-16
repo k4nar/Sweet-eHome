@@ -124,7 +124,7 @@ def post_action(id, name):
             response.status = 403
             return {"error": "Device {} is not connected.".format(id)}
 
-        args = dict([(arg, request.forms.get(arg)) for arg in action["args"]])
+        args = dict([(arg, request.json.get(arg)) for arg in action["args"]])
 
         if api.core.do(device, action, **args):
             response.status = 204
