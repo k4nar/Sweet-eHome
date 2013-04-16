@@ -84,5 +84,8 @@ class BaseDriver(object):
                 return False
         return True
 
+    def get_id(self, device):
+        return device["id"].split('_', 1)[1]
+
     def do(self, device, action, **kwargs):
         pass

@@ -67,7 +67,7 @@ class Driver(BaseDriver):
 
     def _post(self, device, action, **kwargs):
         try:
-            r = requests.post(self._url("devices", device["id"], action), data=kwargs)
+            r = requests.post(self._url("devices", self.get_id(device), action), data=kwargs)
         except:
             logger.info(self.ERROR_NO_CONNECTION)
             return False
