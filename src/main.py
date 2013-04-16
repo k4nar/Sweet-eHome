@@ -1,3 +1,5 @@
+#!/usr/bin/python2
+
 from multiprocessing import Process
 
 from server import run

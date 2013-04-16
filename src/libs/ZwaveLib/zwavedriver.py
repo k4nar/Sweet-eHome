@@ -12,7 +12,7 @@ class Driver(BaseDriver):
         super(Driver, self).__init__()
 
         self.options = openzwave.PyOptions()
-        self.options.create("src/libs/ZwaveLib/config/", "", "")
+        self.options.create("src/libs/ZwaveLib/config/", "src/libs/ZwaveLib/user/", "")
         self.options.lock()
 
         self.manager = openzwave.PyManager()
